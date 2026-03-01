@@ -5,6 +5,10 @@ import (
 
 	"github.com/bits-and-atoms/Go_REST_API/db"
 )
+// exec used for insert,update ,delete create
+//query used for select
+//prepare can be used with both exec and query, it is for performance , so if you dont close it then it saves
+//the query in memory so increases speed but if you close it after that it behaves as non prepare exec or query only
 
 type Event struct{
 	ID int64
