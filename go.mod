@@ -2,7 +2,10 @@ module github.com/bits-and-atoms/Go_REST_API
 
 go 1.25.0
 
-require github.com/gin-gonic/gin v1.12.0
+require (
+	github.com/gin-gonic/gin v1.12.0
+	github.com/mattn/go-sqlite3 v1.14.34
+)
 
 require (
 	github.com/bytedance/gopkg v0.1.3 // indirect
