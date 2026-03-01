@@ -3,10 +3,12 @@ package main
 import (
 	"net/http"
 
+	"github.com/bits-and-atoms/Go_REST_API/db"
 	"github.com/bits-and-atoms/Go_REST_API/model"
 	"github.com/gin-gonic/gin"
 )
 func main(){
+	db.InitDB()
 	server := gin.Default()
 	server.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK,gin.H{"message":"healthy"})
@@ -16,7 +18,13 @@ func main(){
 	server.Run(":8080")
 }
 func getEvents(ctx *gin.Context){
-	events := model.GetAllEvents()
+	events ,err := model.GetAllEvents()
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError,gin.H{
+			"message":"could not get events",
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK,events)
 }
 func createEvent(ctx *gin.Context){
@@ -26,8 +34,13 @@ func createEvent(ctx *gin.Context){
 		ctx.JSON(http.StatusBadRequest,gin.H{"message":"unable to parse request, make sure you pass all necessary fields"})
 		return
 	}
-	event.ID = 1
 	event.UserID = 1
-	event.Save()
+	err = event.Save()
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError,gin.H{
+			"message":"could not get events",
+		})
+		return
+	}
 	ctx.JSON(http.StatusCreated,gin.H{"message":"event created","event":event})
 }

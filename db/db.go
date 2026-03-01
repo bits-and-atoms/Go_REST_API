@@ -12,9 +12,10 @@ func InitDB(){
 	}
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
+	CreateTables()
 }
 func CreateTables(){
-	createEventsTable = `
+	createEventsTable := `
 	CREATE TABLE IF NOT EXISTS events (
 		id integer primary key autoincrement,
 		name text not null,
@@ -25,5 +26,8 @@ func CreateTables(){
 	)
 	`
 	//` ` helps us to write string in multiple line 
-	
+	_,err := DB.Exec(createEventsTable)
+	if err != nil{
+		panic("could not create events table")
+	}
 }
