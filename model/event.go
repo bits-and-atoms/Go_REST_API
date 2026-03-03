@@ -43,6 +43,23 @@ func (e *Event) Save() error {
 	e.ID = id
 	return nil
 }
+func (e *Event) Update() error {
+	query := `
+	update events
+	set name =?,description =?,location=?,dateTime=?
+	where id = ?
+	`
+	st,err := db.DB.Prepare(query)
+	if err != nil{
+		return err
+	}
+	defer st.Close()
+	_, err = st.Exec(e.Name,e.Description,e.Location,e.DateTime,e.ID)
+	if err != nil{
+		return err
+	}
+	return nil
+}
 func GetAllEvents() ([]Event, error) {
 	query := "select * from events"
 	st, err := db.DB.Prepare(query)
@@ -76,7 +93,7 @@ func GetEventById(id int64) (*Event, error) {
 	// 	return nil, err
 	// }
 	// return &curr,nil
-	
+
 	//with prepare
 	query := "select * from events where id = ?"
 	st, err := db.DB.Prepare(query)
