@@ -1,0 +1,32 @@
+package model
+
+import (
+	"github.com/bits-and-atoms/Go_REST_API/db"
+	"github.com/bits-and-atoms/Go_REST_API/utils"
+)
+
+type User struct{
+	ID int64
+	Email string `binding:"required"`
+	Password string `binding:"required"`
+}
+
+func (u *User) Save() error{
+	query := "insert into users (email,password) values (?,?)"
+	st,err := db.DB.Prepare(query)
+	if err != nil{
+		return err
+	}
+	defer st.Close()
+	hashpass , err := utils.HashPassword(u.Password)
+	if err != nil{
+		return err
+	}
+	result,err := st.Exec(u.Email,hashpass)
+	if err != nil{
+		return err
+	}
+	id,err := result.LastInsertId()
+	u.ID = id
+	return err
+}

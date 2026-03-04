@@ -26,7 +26,18 @@ func CreateTables(){
 	)
 	`
 	//` ` helps us to write string in multiple line 
-	_,err := DB.Exec(createEventsTable)
+	createUsersTable := `
+	CREATE TABLE IF NOT EXISTS users (
+		id integer primary key autoincrement,
+		email text not null unique,
+		password text not null
+	)
+	`
+	_, err := DB.Exec(createUsersTable)
+	if err != nil{
+		panic("could not create users table")
+	}
+	_,err = DB.Exec(createEventsTable)
 	if err != nil{
 		panic("could not create events table")
 	}
