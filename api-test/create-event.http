@@ -1,6 +1,6 @@
 POST http://localhost:8080/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QzQGdtYWlsLmNvbSIsImV4cCI6MTc3MjY0ODYxNywidXNlcklkIjozfQ.s4rJD8f_rMiF5cazQqYHQckpneYKgJkGe9ghO1ilQX8
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxQGdtYWlsLmNvbSIsImV4cCI6MTc3MjY1MDA2MCwidXNlcklkIjoxfQ.MRSoprO0cx5nm7UF0scXADjClQRJQzyPTxdRFqzzh2Q
 
 {
     "name":"ram",
