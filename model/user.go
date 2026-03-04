@@ -34,10 +34,11 @@ func (u *User) Save() error{
 }
 
 func (u *User) ValidateCreds() error{
-	query := "select password from users where email = ?"
+	query := "select id,password from users where email = ?"
 	row := db.DB.QueryRow(query,u.Email)
 	var hashpass string
-	err := row.Scan(&hashpass)
+	var id int64
+	err := row.Scan(&id,&hashpass)
 	if err != nil{
 		return err
 	}
@@ -45,5 +46,6 @@ func (u *User) ValidateCreds() error{
 	if isok == false{
 		return errors.New("Credentials invalid")
 	}
+	u.ID = id
 	return nil
 }

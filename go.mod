@@ -4,8 +4,9 @@ go 1.25.0
 
 require (
 	github.com/gin-gonic/gin v1.12.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.34
-	github.com/pelletier/go-toml v1.9.5
 	golang.org/x/crypto v0.48.0
 )
 
