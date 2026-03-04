@@ -10,8 +10,8 @@ import (
 
 func GenerateToken(email string, userId int64) (string, error) {
 	secretKey := os.Getenv("SECRET_KEY")
-	if secretKey == ""{
-		return "",errors.New("secret signing key not found")
+	if secretKey == "" {
+		return "", errors.New("secret signing key not found")
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email":  email,
@@ -23,4 +23,31 @@ func GenerateToken(email string, userId int64) (string, error) {
 		return "", err
 	}
 	return rel, nil
+}
+
+func VerifyToken(token string) error {
+	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		_, ok := t.Method.(*jwt.SigningMethodHMAC)
+		if ok == false {
+			return nil, errors.New("unexpected signin method")
+		}
+		secretKey := os.Getenv("SECRET_KEY")
+
+		return []byte(secretKey), nil
+	})
+	if err != nil {
+		return errors.New("could not parse token")
+	}
+	isok := parsedToken.Valid
+	if isok == false {
+		return errors.New("invalid token")
+	}
+	_, ok := parsedToken.Claims.(jwt.MapClaims)
+	// claims, ok := parsedToken.Claims.(jwt.MapClaims)
+	if !ok {
+		return errors.New("invalid token claims")
+	}
+	// email := claims["email"].(string)
+	// userId := claims["userId"].(int64)
+	return nil
 }

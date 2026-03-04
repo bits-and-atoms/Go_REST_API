@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/bits-and-atoms/Go_REST_API/model"
+	"github.com/bits-and-atoms/Go_REST_API/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,8 +37,22 @@ func getEvent(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, event)
 }
 func createEvent(ctx *gin.Context) {
+	token := ctx.Request.Header.Get("authorization")
+	if token == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"message": "not authorized login first",
+		})
+		return
+	}
+	err := utils.VerifyToken(token)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"message": "not authorized",
+		})
+		return
+	}
 	var event model.Event
-	err := ctx.ShouldBindJSON(&event)
+	err = ctx.ShouldBindJSON(&event)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "unable to parse request, make sure you pass all necessary fields"})
 		return
@@ -82,12 +97,12 @@ func updateEvent(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusOK,gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"message": "event updated successfully",
 	})
 }
 
-func deleteEvent(ctx *gin.Context){
+func deleteEvent(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -102,13 +117,13 @@ func deleteEvent(ctx *gin.Context){
 		})
 	}
 	err = event.Delete()
-	if err != nil{
-		ctx.JSON(http.StatusInternalServerError,gin.H{
-			"message":"unable to delete event",
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "unable to delete event",
 		})
 		return
 	}
-	ctx.JSON(http.StatusOK,gin.H{
-		"message":"event deleted successfully",
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "event deleted successfully",
 	})
 }
