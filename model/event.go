@@ -64,9 +64,9 @@ func GetAllEvents() ([]Event, error) {
 	query := "select * from events"
 	st, err := db.DB.Prepare(query)
 	if err != nil {
-		defer st.Close()
 		return nil, err
 	}
+	defer st.Close()
 	result, err := st.Query()
 	//query used for select
 	if err != nil {

@@ -1,6 +1,8 @@
 package model
 
 import (
+	"errors"
+
 	"github.com/bits-and-atoms/Go_REST_API/db"
 	"github.com/bits-and-atoms/Go_REST_API/utils"
 )
@@ -29,4 +31,19 @@ func (u *User) Save() error{
 	id,err := result.LastInsertId()
 	u.ID = id
 	return err
+}
+
+func (u *User) ValidateCreds() error{
+	query := "select password from users where email = ?"
+	row := db.DB.QueryRow(query,u.Email)
+	var hashpass string
+	err := row.Scan(&hashpass)
+	if err != nil{
+		return err
+	}
+	isok := utils.CheckPassHash(u.Password,hashpass)
+	if isok == false{
+		return errors.New("Credentials invalid")
+	}
+	return nil
 }
