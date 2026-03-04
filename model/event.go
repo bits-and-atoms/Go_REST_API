@@ -49,13 +49,13 @@ func (e *Event) Update() error {
 	set name =?,description =?,location=?,dateTime=?
 	where id = ?
 	`
-	st,err := db.DB.Prepare(query)
-	if err != nil{
+	st, err := db.DB.Prepare(query)
+	if err != nil {
 		return err
 	}
 	defer st.Close()
-	_, err = st.Exec(e.Name,e.Description,e.Location,e.DateTime,e.ID)
-	if err != nil{
+	_, err = st.Exec(e.Name, e.Description, e.Location, e.DateTime, e.ID)
+	if err != nil {
 		return err
 	}
 	return nil
@@ -109,4 +109,15 @@ func GetEventById(id int64) (*Event, error) {
 		return nil, err
 	}
 	return &curr, nil
+}
+
+func (e *Event) Delete() error {
+	query := "delete from events where id = ?"
+	st, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer st.Close()
+	_, err = st.Exec(e.ID)
+	return err
 }

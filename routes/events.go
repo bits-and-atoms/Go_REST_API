@@ -86,3 +86,29 @@ func updateEvent(ctx *gin.Context) {
 		"message": "event updated successfully",
 	})
 }
+
+func deleteEvent(ctx *gin.Context){
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "could not parse event id",
+		})
+		return
+	}
+	event, err := model.GetEventById(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "no such event",
+		})
+	}
+	err = event.Delete()
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError,gin.H{
+			"message":"unable to delete event",
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK,gin.H{
+		"message":"event deleted successfully",
+	})
+}
