@@ -37,14 +37,14 @@ func getEvent(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, event)
 }
 func createEvent(ctx *gin.Context) {
-	token := ctx.Request.Header.Get("authorization")
+	token := ctx.Request.Header.Get("Authorization")
 	if token == "" {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "not authorized login first",
 		})
 		return
 	}
-	err := utils.VerifyToken(token)
+	uID,err := utils.VerifyToken(token)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "not authorized",
@@ -57,7 +57,7 @@ func createEvent(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "unable to parse request, make sure you pass all necessary fields"})
 		return
 	}
-	event.UserID = 1
+	event.UserID = uID
 	err = event.Save()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
